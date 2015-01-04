@@ -1,0 +1,10 @@
+<?php
+
+$rcmail_config['redis_server'] = array(
+    'host'     => '127.0.0.1',              // host to connect to
+    'port'     => 6379,                     // port to connect to
+    'database' => 0,                        // default database, should be an integer
+    'password' => false,                    // password when using auth
+);
+
+
