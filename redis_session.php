@@ -1,6 +1,6 @@
 <?php
 
-require_once(dirname(__FILE__) . '/redis_driver.php');
+require_once(dirname(__FILE__) . '/rcube_session_redis.php');
 
 class redis_session extends rcube_plugin
 {
@@ -23,15 +23,15 @@ class redis_session extends rcube_plugin
         );
 
         // create redis class
-        $redis = new redis_driver($config);
+        $redis = new rcube_session_redis($config);
 
-        if(! $redis) {
+        if(! $redis || !$redis->connected) {
             rcube::raise_error(array('code' => 604, 'type' => 'db',
                                    'line' => __LINE__, 'file' => __FILE__,
                                    'message' => "Failed to connect to redis server. Please check configuration"),
                                true, true);
         }
 
-        return array('instance' => $redis);
+        return array('id' => 'redis', 'instance' => $redis);
     }
 }
