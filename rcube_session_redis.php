@@ -29,26 +29,49 @@
 class rcube_session_redis extends rcube_session {
 
     private $redis;
-    public $connected;  // keep track of our connection status
 
-    public function __construct($config)
+    public function __construct()
     {
+        // instantiate Redis object
         $this->redis = new Redis();
-        if(! $this->redis->connect($config['host'], $config['port'])) {
-            $this->connected = false;
-            return;
+
+        if(! $this->redis) {
+            rcube::raise_error(array('code' => 604, 'type' => 'session',
+                                   'line' => __LINE__, 'file' => __FILE__,
+                                   'message' => "Failed to find Redis. Make sure php-redis is included"),
+                               true, true);
+        }
+
+        // get config instance
+        $config = rcube::get_instance()->config->get('redis_server', array('host'     => '127.0.0.1',
+                                                                           'port'     => 6379,
+                                                                           'database' => 0,
+                                                                           'password' => false));
+
+        if($this->redis->connect($config['host'], $config['port']) === false) {
+            rcube::raise_error(array('code' => 604, 'type' => 'session',
+                                   'line' => __LINE__, 'file' => __FILE__,
+                                   'message' => "Could not connect to Redis server. Please check host and port"),
+                               true, true);
         }
 
         if($config['password'] !== false && $this->redis->auth($config['password']) === false) {
-            $this->connected = false;
-            return;
+            rcube::raise_error(array('code' => 604, 'type' => 'session',
+                                   'line' => __LINE__, 'file' => __FILE__,
+                                   'message' => "Could not authenticatie with Redis server. Please check password."),
+                               true, true);
         }
 
         if($config['database'] !== 0 && $this->redis->select($config['database']) === false) {
-            $this->connected = false;
-            return;
+            rcube::raise_error(array('code' => 604, 'type' => 'session',
+                                   'line' => __LINE__, 'file' => __FILE__,
+                                   'message' => "Could not select Redis database. Please check database setting."),
+                               true, true);
         }
-        $this->connected = true;
+
+        // register sessions handler
+        $this->register_session_handler();
+
     }
 
     /**
