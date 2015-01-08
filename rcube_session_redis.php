@@ -20,7 +20,7 @@
 */
 
 /**
- * Class to provide memcache session storage
+ * Class to provide redis session storage
  *
  * @package    Framework
  * @subpackage Core
