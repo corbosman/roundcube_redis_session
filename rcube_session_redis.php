@@ -35,7 +35,7 @@ class rcube_session_redis extends rcube_session {
         // instantiate Redis object
         $this->redis = new Redis();
 
-        if(! $this->redis) {
+        if (! $this->redis) {
             rcube::raise_error(array('code' => 604, 'type' => 'session',
                                    'line' => __LINE__, 'file' => __FILE__,
                                    'message' => "Failed to find Redis. Make sure php-redis is included"),
@@ -48,21 +48,21 @@ class rcube_session_redis extends rcube_session {
                                                                            'database' => 0,
                                                                            'password' => false));
 
-        if($this->redis->connect($config['host'], $config['port']) === false) {
+        if ($this->redis->connect($config['host'], $config['port']) === false) {
             rcube::raise_error(array('code' => 604, 'type' => 'session',
                                    'line' => __LINE__, 'file' => __FILE__,
                                    'message' => "Could not connect to Redis server. Please check host and port"),
                                true, true);
         }
 
-        if($config['password'] !== false && $this->redis->auth($config['password']) === false) {
+        if ($config['password'] !== false && $this->redis->auth($config['password']) === false) {
             rcube::raise_error(array('code' => 604, 'type' => 'session',
                                    'line' => __LINE__, 'file' => __FILE__,
                                    'message' => "Could not authenticatie with Redis server. Please check password."),
                                true, true);
         }
 
-        if($config['database'] !== 0 && $this->redis->select($config['database']) === false) {
+        if ($config['database'] !== 0 && $this->redis->select($config['database']) === false) {
             rcube::raise_error(array('code' => 604, 'type' => 'session',
                                    'line' => __LINE__, 'file' => __FILE__,
                                    'message' => "Could not select Redis database. Please check database setting."),
